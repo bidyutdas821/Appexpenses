@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Expense Splitter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Trip Expense Splitter</h1>
+            <p class="subtitle">Track and split expenses with ease</p>
+            <div class="trip-selector-container">
+                <select id="trip-selector" class="trip-selector" onchange="switchTrip()">
+                    <option value="">Select a trip...</option>
+                </select>
+                <button class="btn btn-primary btn-new-trip" onclick="showTripModal()">+ New Trip</button>
+            </div>
+        </header>
+
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-page="expenses">Expenses</button>
+            <button class="tab-btn" data-page="people">People</button>
+            <button class="tab-btn" data-page="categories">Categories</button>
+            <button class="tab-btn" data-page="summary">Summary</button>
+        </nav>
+
+        <!-- Expenses Page -->
+        <div id="expenses-page" class="page active">
+            <div class="page-header">
+                <h2>Expenses</h2>
+                <button class="btn btn-primary" onclick="showExpenseModal()">+ Add Expense</button>
+            </div>
+            <div id="expenses-list" class="list-container"></div>
+        </div>
+
+        <!-- People Page -->
+        <div id="people-page" class="page">
+            <div class="page-header">
+                <h2>People</h2>
+                <button class="btn btn-primary" onclick="showPersonModal()">+ Add Person</button>
+            </div>
+            <div id="people-list" class="list-container"></div>
+        </div>
+
+        <!-- Categories Page -->
+        <div id="categories-page" class="page">
+            <div class="page-header">
+                <h2>Categories</h2>
+                <button class="btn btn-primary" onclick="showCategoryModal()">+ Add Category</button>
+            </div>
+            <div id="categories-list" class="list-container"></div>
+        </div>
+
+        <!-- Summary Page -->
+        <div id="summary-page" class="page">
+            <div class="page-header">
+                <h2>Summary & Settlements</h2>
+            </div>
+            <div id="summary-content" class="summary-container"></div>
+        </div>
+    </div>
+
+    <!-- Person Modal -->
+    <div id="person-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="person-modal-title">Add Person</h3>
+                <span class="close" onclick="closePersonModal()">&times;</span>
+            </div>
+            <form id="person-form" onsubmit="savePerson(event)">
+                <input type="hidden" id="person-id">
+                <div class="form-group">
+                    <label for="person-name">Name</label>
+                    <input type="text" id="person-name" required placeholder="Enter person's name">
+                </div>
+                <div class="form-group">
+                    <label for="person-email">Email (Optional)</label>
+                    <input type="email" id="person-email" placeholder="Enter email">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closePersonModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="category-modal-title">Add Category</h3>
+                <span class="close" onclick="closeCategoryModal()">&times;</span>
+            </div>
+            <form id="category-form" onsubmit="saveCategory(event)">
+                <input type="hidden" id="category-id">
+                <div class="form-group">
+                    <label for="category-name">Category Name</label>
+                    <input type="text" id="category-name" required placeholder="e.g., Food, Transport, Accommodation">
+                </div>
+                <div class="form-group">
+                    <label for="category-icon">Icon (Emoji)</label>
+                    <input type="text" id="category-icon" maxlength="2" placeholder="🍔">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trip Modal -->
+    <div id="trip-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="trip-modal-title">Create New Trip</h3>
+                <span class="close" onclick="closeTripModal()">&times;</span>
+            </div>
+            <form id="trip-form" onsubmit="saveTrip(event)">
+                <input type="hidden" id="trip-id">
+                <div class="form-group">
+                    <label for="trip-name">Trip Name</label>
+                    <input type="text" id="trip-name" required placeholder="e.g., Goa Trip 2026, Weekend Getaway">
+                </div>
+                <div class="form-group">
+                    <label for="trip-description">Description (Optional)</label>
+                    <textarea id="trip-description" rows="3" placeholder="Add notes about this trip..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="trip-start-date">Start Date (Optional)</label>
+                    <input type="date" id="trip-start-date">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeTripModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Trip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Expense Modal -->
+    <div id="expense-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="expense-modal-title">Add Expense</h3>
+                <span class="close" onclick="closeExpenseModal()">&times;</span>
+            </div>
+            <form id="expense-form" onsubmit="saveExpense(event)">
+                <input type="hidden" id="expense-id">
+                <div class="form-group">
+                    <label for="expense-description">Description</label>
+                    <input type="text" id="expense-description" required placeholder="What was this expense for?">
+                </div>
+                <div class="form-group">
+                    <label for="expense-amount">Amount (₹)</label>
+                    <input type="number" id="expense-amount" step="0.01" required placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="expense-category">Category</label>
+                    <select id="expense-category" required>
+                        <option value="">Select a category</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-paidby">Paid By</label>
+                    <select id="expense-paidby" required>
+                        <option value="">Select person</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-date">Date</label>
+                    <input type="date" id="expense-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Split Between</label>
+                    <div id="split-people" class="checkbox-group"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeExpenseModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
